@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace ConfluenceApiDoc;
 
-use ConfluenceApiDoc\Generator\DocumentGeneratorInterface;
 use ConfluenceApiDoc\Exception\ConfluenceClientException;
 use ConfluenceApiDoc\Exception\ConfluencePublisherException;
-use ConfluenceApiDoc\Exception\OpenApiProviderException;
+use ConfluenceApiDoc\Generator\DocumentGeneratorInterface;
 use Psr\Log\LoggerInterface;
 
 class ConfluencePublisher
@@ -46,7 +45,7 @@ class ConfluencePublisher
         DocumentGeneratorInterface $generator,
         OpenApiProvider $openApiProvider,
         string $apiName,
-        array $apiConfig
+        array $apiConfig,
     ): array {
 
         $this->logger->info(sprintf('Start processing API "%s"', $apiName));
@@ -60,7 +59,7 @@ class ConfluencePublisher
 
         if (isset($apiConfig['checksum']) && $checksum === $apiConfig['checksum']) {
             $this->logger->info(
-                sprintf('Content checksum of the API "%s" was not changed. Publishing skipped.', $apiName)
+                sprintf('Content checksum of the API "%s" was not changed. Publishing skipped.', $apiName),
             );
             $status = self::STATUS_SKIPPED;
         } else {
@@ -98,14 +97,14 @@ class ConfluencePublisher
             // Update existing page
             $page = $this->updatePage($apiName, (string) $apiConfig['page-id'], $content);
         } else {
-            // Create new page
+            // Create a new page
             $scope = $this->getScope((string) $apiConfig['scope-key']);
             $page = $this->createPage(
                 $apiName,
                 (string) $scope['id'],
                 (string) $apiConfig['parent-id'],
                 (string) $apiConfig['page-title'],
-                $content
+                $content,
             );
         }
 
@@ -188,7 +187,7 @@ class ConfluencePublisher
         string $scopeId,
         string $parentId,
         string $title,
-        string $content
+        string $content,
     ): array {
 
         $this->logger->info(sprintf('Creating confluence page for API "%s"', $apiName), [
@@ -200,7 +199,7 @@ class ConfluencePublisher
         $page = $this->client->createPage($scopeId, $parentId, $title, $content);
 
         $this->logger->info(
-            sprintf('Confluence page for API "%s" was created with page-id "%s"', $apiName, $page['id'])
+            sprintf('Confluence page for API "%s" was created with page-id "%s"', $apiName, $page['id']),
         );
         $this->logger->debug(sprintf('Created confluence page for API "%s"', $apiName), $page);
 
@@ -229,7 +228,7 @@ class ConfluencePublisher
     }
 
     /**
-     * Returns a valid confluence page URL based on provided page path.
+     * Returns a valid confluence page URL based on the provided page path.
      *
      * @param string $path
      *

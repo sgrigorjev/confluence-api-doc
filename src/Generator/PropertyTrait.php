@@ -38,7 +38,7 @@ trait PropertyTrait
     }
 
     /**
-     * Creates a set of nodes with information about single type based on the provided property schema
+     * Creates a set of nodes with information about the single type based on the provided property schema
      *
      * @param array $property
      *
@@ -59,7 +59,7 @@ trait PropertyTrait
                 $isNamedSchema = true;
                 $type = $this->getSchemaNameByRef($property['items']['$ref']);
             } else {
-                // The array element is of simple type
+                // The array element is of a simple type
                 $type = (string) ($property['items']['type'] ?? '');
             }
         } elseif (isset($property['$ref'])) {
@@ -67,7 +67,7 @@ trait PropertyTrait
             $isNamedSchema = true;
             $type = $this->getSchemaNameByRef($property['$ref']);
         } else {
-            // The property value is of simple type
+            // The property value is of a simple type
             $type = (string) $property['type'];
         }
 

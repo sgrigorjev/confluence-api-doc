@@ -30,12 +30,12 @@ trait MarkdownTrait
 
             if ($currentChar === '`') {
                 if ($mode === 'text') {
-                    // Finish saving text part and start saving code part
+                    // Finish saving a text part and start saving a code part
                     $this->appendIfNotEmpty($paragraph, $buffer);
                     $buffer = '';
                     $mode = 'code';
                 } else {
-                    // Finish saving code part and return to text part
+                    // Finish saving a code part and return to a text part
                     $this->appendIfNotEmpty($paragraph, $buffer, new Code());
                     $buffer = '';
                     $mode = 'text';
@@ -45,7 +45,7 @@ trait MarkdownTrait
                 $buffer .= $currentChar;
             }
 
-            $i = $i + 1;
+            $i++;
         }
 
         // Last text or code part
@@ -58,7 +58,7 @@ trait MarkdownTrait
         return [$paragraph];
     }
 
-    private function appendIfNotEmpty(Node $parent, string $text, ...$markers)
+    private function appendIfNotEmpty(Node $parent, string $text, ...$markers): void
     {
         if ($text) {
             $parent->append(new Text($text, ...$markers));
