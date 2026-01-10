@@ -30,6 +30,14 @@ trait PropertyTrait
                     $nodes[] = new Text("\n");
                 }
             }
+        } elseif (isset($property['type']) && is_array($property['type'])) {
+            $amount = count($property['type']);
+            foreach ($property['type'] as $i => $type) {
+                $nodes = array_merge($nodes, $this->createPropertySingleType(array_merge($property, ['type' => $type])));
+                if ($i < $amount - 1) {
+                    $nodes[] = new Text("\n");
+                }
+            }
         } else {
             $nodes = array_merge($nodes, $this->createPropertySingleType($property));
         }
