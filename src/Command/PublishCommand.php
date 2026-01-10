@@ -6,10 +6,10 @@ namespace ConfluenceApiDoc\Command;
 
 use ConfluenceApiDoc\ConfluenceClient;
 use ConfluenceApiDoc\ConfluencePublisher;
+use ConfluenceApiDoc\Exception\CommandException;
 use ConfluenceApiDoc\Exception\OpenApiProviderException;
 use ConfluenceApiDoc\Generator\DefaultGenerator;
 use ConfluenceApiDoc\Generator\DocumentGeneratorInterface;
-use ConfluenceApiDoc\Exception\CommandException;
 use ConfluenceApiDoc\OpenApiProvider;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -19,7 +19,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class PublishCommand extends AbstractCommand
 {
-    protected static $defaultName = 'publish';
+    protected static string $defaultName = 'publish';
 
     public function __construct()
     {
@@ -53,7 +53,7 @@ class PublishCommand extends AbstractCommand
             $result = $publisher->process($docGenerator, $openApiProvider, $apiName, $apiConfig);
 
             // Update api config with information about the latest update
-            $apiDocConfig['apis'][$apiName] = array_merge($apiDocConfig['apis'][$apiName], $result['info']);
+            $apiDocConfig['apis'][$apiName] = [...$apiDocConfig['apis'][$apiName], ...$result['info']];
 
             // Output the API page status
             if (ConfluencePublisher::STATUS_PUBLISHED === $result['status']) {
@@ -61,14 +61,15 @@ class PublishCommand extends AbstractCommand
                     sprintf(
                         ' * API <info>"%s"</info> <fg=black;bg=green> PUBLISHED </> — confluence page %s',
                         $apiName,
-                        $result['info']['page-url']
-                    ));
+                        $result['info']['page-url'],
+                    ),
+                );
             } else {
                 $io->writeln(
                     sprintf(
                         ' * API <info>"%s"</info> <fg=black;bg=gray> SKIPPED </> — no changes to publish',
-                        $apiName
-                    )
+                        $apiName,
+                    ),
                 );
             }
         }

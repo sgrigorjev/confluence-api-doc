@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace ConfluenceApiDoc;
 
+use ConfluenceApiDoc\Exception\ConfluenceClientException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\GuzzleException;
-use ConfluenceApiDoc\Exception\ConfluenceClientException;
 use Psr\Http\Message\ResponseInterface;
 
 class ConfluenceClient
@@ -23,7 +23,7 @@ class ConfluenceClient
             'auth' => [$config['user'], $config['token']],
             'headers' => [
                 'User-Agent' => 'ConfluenceApiDoc publishing tool',
-            ]
+            ],
         ]);
         $this->host = $config['host'];
     }

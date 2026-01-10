@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace ConfluenceApiDoc\Command;
 
-use Exception;
 use ConfluenceApiDoc\Exception\CommandException;
 use ConfluenceApiDoc\Logger\ConsoleLogger;
+use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\FormatterHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -152,7 +151,7 @@ abstract class AbstractCommand extends Command
         string $path,
         array $config,
         array $keyPath,
-        array $expectedType = ['string', 'integer']
+        array $expectedType = ['string', 'integer'],
     ): void {
 
         $depth = count($keyPath);
@@ -216,6 +215,6 @@ abstract class AbstractCommand extends Command
     abstract protected function executeSafely(
         InputInterface $input,
         OutputInterface $output,
-        LoggerInterface $logger
+        LoggerInterface $logger,
     ): int;
 }

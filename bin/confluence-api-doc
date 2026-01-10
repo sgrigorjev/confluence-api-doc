@@ -28,8 +28,8 @@ use Symfony\Component\Console\Application;
 
 try {
     $application = new Application();
-    $application->add(new InitCommand());
-    $application->add(new PublishCommand());
+    $application->addCommand(new InitCommand());
+    $application->addCommand(new PublishCommand());
     $application->run();
 } catch (Exception $e) {
     echo $e;

@@ -25,20 +25,30 @@ trait PropertyTrait
         if (isset($property['oneOf']) && is_array($property['oneOf'])) {
             $amount = count($property['oneOf']);
             foreach ($property['oneOf'] as $i => $subProperty) {
-                $nodes = array_merge($nodes, $this->createPropertySingleType($subProperty));
+                $nodes = [...$nodes, ...$this->createPropertySingleType($subProperty)];
+                if ($i < $amount - 1) {
+                    $nodes[] = new Text("\n");
+                }
+            }
+        } elseif (isset($property['type']) && is_array($property['type'])) {
+            $amount = count($property['type']);
+            foreach ($property['type'] as $i => $type) {
+                $modifiedProperty = $property;
+                $modifiedProperty['type'] = $type;
+                $nodes = [...$nodes, ...$this->createPropertySingleType($modifiedProperty)];
                 if ($i < $amount - 1) {
                     $nodes[] = new Text("\n");
                 }
             }
         } else {
-            $nodes = array_merge($nodes, $this->createPropertySingleType($property));
+            $nodes = [...$nodes, ...$this->createPropertySingleType($property)];
         }
 
         return (new Paragraph())->append(...$nodes);
     }
 
     /**
-     * Creates a set of nodes with information about single type based on the provided property schema
+     * Creates a set of nodes with information about the single type based on the provided property schema
      *
      * @param array $property
      *
@@ -59,7 +69,7 @@ trait PropertyTrait
                 $isNamedSchema = true;
                 $type = $this->getSchemaNameByRef($property['items']['$ref']);
             } else {
-                // The array element is of simple type
+                // The array element is of a simple type
                 $type = (string) ($property['items']['type'] ?? '');
             }
         } elseif (isset($property['$ref'])) {
@@ -67,7 +77,7 @@ trait PropertyTrait
             $isNamedSchema = true;
             $type = $this->getSchemaNameByRef($property['$ref']);
         } else {
-            // The property value is of simple type
+            // The property value is of a simple type
             $type = (string) $property['type'];
         }
 
@@ -107,11 +117,20 @@ trait PropertyTrait
             $nodes[] = new Text($property['description']);
         }
 
+        if (isset($property['enum']) && is_array($property['enum'])) {
+            if ($nodes) {
+                $nodes[] = new Text("\n");
+            }
+            $nodes[] = new Status('One of', Status::COLOR_NEUTRAL);
+            $nodes[] = new Text(' ');
+            $nodes[] = new Text(implode(', ', $property['enum']));
+        }
+
         if (isset($property['default'])) {
             if ($nodes) {
                 $nodes[] = new Text("\n");
             }
-            $nodes[] = new Status('Default: ' . var_export($property['default'], true), Status::COLOR_PURPLE);
+            $nodes[] = new Status('Default: ' . json_encode($property['default']), Status::COLOR_PURPLE);
         }
 
         return (new Paragraph())->append(...$nodes);

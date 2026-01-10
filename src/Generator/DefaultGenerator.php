@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace ConfluenceApiDoc\Generator;
 
+use ConfluenceApiDoc\OpenApiProvider;
+use ConfluenceApiDoc\OpenApiUtilsTrait;
 use DH\Adf\Node\Block\{
     CodeBlock,
     Document,
@@ -28,8 +30,6 @@ use DH\Adf\Node\Mark\{
     Strong,
 };
 use DH\Adf\Node\Node;
-use ConfluenceApiDoc\OpenApiProvider;
-use ConfluenceApiDoc\OpenApiUtilsTrait;
 
 class DefaultGenerator implements DocumentGeneratorInterface
 {
@@ -88,20 +88,20 @@ class DefaultGenerator implements DocumentGeneratorInterface
 
         // Summary, method type, URI and description
         $nodes[] = (new Heading(1))->append(
-            new Text($endpoint['summary'])
+            new Text($endpoint['summary']),
         );
 
         $nodes[] = (new Heading(3))->append(
-            new Text(sprintf('%s %s%s', $endpoint['method'], $endpoint['pathPrefix'], $endpoint['path']))
+            new Text(sprintf('%s %s%s', $endpoint['method'], $endpoint['pathPrefix'], $endpoint['path'])),
         );
 
         if (!empty($endpoint['description'])) {
-            $nodes = array_merge($nodes, $this->createFromMarkdown($endpoint['description']));
+            $nodes = [...$nodes, ...$this->createFromMarkdown($endpoint['description'])];
         }
 
         // Example header
         $nodes[] = (new Heading(3))->append(
-            new Text('Example')
+            new Text('Example'),
         );
 
         // Curl example
@@ -111,7 +111,7 @@ class DefaultGenerator implements DocumentGeneratorInterface
 
             // Path parameters header
             $nodes[] = (new Heading(3))->append(
-                new Text('Path parameters')
+                new Text('Path parameters'),
             );
 
             $nodes[] = $this->createParametersTable($endpoint['requestPathParameters']);
@@ -122,7 +122,7 @@ class DefaultGenerator implements DocumentGeneratorInterface
             // Path parameters header
 
             $nodes[] = (new Heading(3))->append(
-                new Text('Query parameters')
+                new Text('Query parameters'),
             );
 
             $nodes[] = $this->createParametersTable($endpoint['requestQueryParameters']);
@@ -132,12 +132,12 @@ class DefaultGenerator implements DocumentGeneratorInterface
 
             // Request body header
             $nodes[] = (new Heading(3))->append(
-                new Text('Request body')
+                new Text('Request body'),
             );
 
             // Request body details
             foreach ($endpoint['requestBodies'] as $requestBody) {
-                $nodes = array_merge($nodes, $this->createRequestBody($requestBody));
+                $nodes = [...$nodes, ...$this->createRequestBody($requestBody)];
             }
         }
 
@@ -145,12 +145,12 @@ class DefaultGenerator implements DocumentGeneratorInterface
 
             // Response header
             $nodes[] = (new Heading(3))->append(
-                new Text('Response')
+                new Text('Response'),
             );
 
             // Responses descriptions
             foreach ($endpoint['responses'] as $responseCode => $response) {
-                $nodes = array_merge($nodes, $this->createResponse((string) $responseCode, $response));
+                $nodes = [...$nodes, ...$this->createResponse((string) $responseCode, $response)];
             }
         }
 
@@ -187,7 +187,7 @@ class DefaultGenerator implements DocumentGeneratorInterface
         // Schema table
         if ($requestBody['example']) {
             $nodes[] = (new Heading(4))->append(
-                new Text('Example:')
+                new Text('Example:'),
             );
             $nodes[] = $this->createSchemaExample($requestBody['example'], $requestBody['contentType']);
         }
@@ -234,20 +234,20 @@ class DefaultGenerator implements DocumentGeneratorInterface
             // Schema table
             if ($content['example']) {
                 $nodes[] = (new Heading(4))->append(
-                    new Text('Example:')
+                    new Text('Example:'),
                 );
                 $nodes[] = $this->createSchemaExample($content['example'], $contentType);
             }
 
             if (!empty($content['examples'])) {
                 $nodes[] = (new Heading(4))->append(
-                    new Text('Examples:')
+                    new Text('Examples:'),
                 );
 
                 foreach ($content['examples'] as $exampleName => $exampleData) {
                     $nodes[] = (new Paragraph())->append(
                         new Text(sprintf('%s:', $exampleName), new Strong()),
-                        new Text(isset($exampleData['summary']) ? ' ' . $exampleData['summary'] : '')
+                        new Text(isset($exampleData['summary']) ? ' ' . $exampleData['summary'] : ''),
                     );
 
                     $nodes[] = $this->createSchemaExample($exampleData['value'], $contentType);
@@ -264,28 +264,28 @@ class DefaultGenerator implements DocumentGeneratorInterface
         // 'Name' header cell
         $header->append(
             (new TableHeader())->append(
-                (new Paragraph())->append(new Text('Name', new Strong()))
-            )
+                (new Paragraph())->append(new Text('Name', new Strong())),
+            ),
         );
         // 'Type' header cell
         $header->append(
             (new TableHeader())->append(
-                (new Paragraph())->append(new Text('Type', new Strong()))
-            )
+                (new Paragraph())->append(new Text('Type', new Strong())),
+            ),
         );
         // 'Required' header cell
         if ($showRequired) {
             $header->append(
                 (new TableHeader())->append(
-                    (new Paragraph())->append(new Text('Required', new Strong()))
-                )
+                    (new Paragraph())->append(new Text('Required', new Strong())),
+                ),
             );
         }
         // 'Description' header cell
         $header->append(
             (new TableHeader())->append(
-                (new Paragraph())->append(new Text('Description', new Strong()))
-            )
+                (new Paragraph())->append(new Text('Description', new Strong())),
+            ),
         );
 
         $table = new Table();
@@ -297,15 +297,15 @@ class DefaultGenerator implements DocumentGeneratorInterface
             // 'Name' cell
             $row->append(
                 (new TableCell())->append(
-                    (new Paragraph())->append(new Text($propertyName))
-                )
+                    (new Paragraph())->append(new Text($propertyName)),
+                ),
             );
 
             // 'Type' cell
             $row->append(
                 (new TableCell())->append(
-                    $this->createPropertyType($property)
-                )
+                    $this->createPropertyType($property),
+                ),
             );
 
             // 'Required' cell
@@ -314,17 +314,17 @@ class DefaultGenerator implements DocumentGeneratorInterface
                 $row->append(
                     (new TableCell())->append(
                         (new Paragraph())->append(
-                            new Status($required ? 'required' : 'optional', $required ? 'red' : 'blue', null, 'bold')
-                        )
-                    )
+                            new Status($required ? 'required' : 'optional', $required ? 'red' : 'blue', null, 'bold'),
+                        ),
+                    ),
                 );
             }
 
             // 'Description' cell
             $row->append(
                 (new TableCell())->append(
-                    $this->createPropertyDescription($property)
-                )
+                    $this->createPropertyDescription($property),
+                ),
             );
 
             $table->append($row);
@@ -339,32 +339,32 @@ class DefaultGenerator implements DocumentGeneratorInterface
         // 'Name' header cell
         $header->append(
             (new TableHeader())->append(
-                (new Paragraph())->append(new Text('Name', new Strong()))
-            )
+                (new Paragraph())->append(new Text('Name', new Strong())),
+            ),
         );
         // 'Type' header cell
         $header->append(
             (new TableHeader())->append(
-                (new Paragraph())->append(new Text('Type', new Strong()))
-            )
+                (new Paragraph())->append(new Text('Type', new Strong())),
+            ),
         );
         // 'Explode' header cell
         $header->append(
             (new TableHeader())->append(
-                (new Paragraph())->append(new Text('Explode', new Strong()))
-            )
+                (new Paragraph())->append(new Text('Explode', new Strong())),
+            ),
         );
         // 'Required' header cell
         $header->append(
             (new TableHeader())->append(
-                (new Paragraph())->append(new Text('Required', new Strong()))
-            )
+                (new Paragraph())->append(new Text('Required', new Strong())),
+            ),
         );
         // 'Description' header cell
         $header->append(
             (new TableHeader())->append(
-                (new Paragraph())->append(new Text('Description', new Strong()))
-            )
+                (new Paragraph())->append(new Text('Description', new Strong())),
+            ),
         );
 
         $table = new Table();
@@ -376,15 +376,15 @@ class DefaultGenerator implements DocumentGeneratorInterface
             // 'Name' cell
             $row->append(
                 (new TableCell())->append(
-                    (new Paragraph())->append(new Text($parameter['name'] ?? ''))
-                )
+                    (new Paragraph())->append(new Text($parameter['name'] ?? '')),
+                ),
             );
 
             // 'Type' cell
             $row->append(
                 (new TableCell())->append(
-                    (new Paragraph())->append(new Text($parameter['schema']['type'] ?? ''))
-                )
+                    (new Paragraph())->append(new Text($parameter['schema']['type'] ?? '')),
+                ),
             );
 
             // 'Explode' cell
@@ -392,8 +392,8 @@ class DefaultGenerator implements DocumentGeneratorInterface
             $color = ($parameter['explode'] ?? false) ? 'green' : 'neutral';
             $row->append(
                 (new TableCell())->append(
-                    (new Paragraph())->append(new Status($text, $color, null, 'bold'))
-                )
+                    (new Paragraph())->append(new Status($text, $color, null, 'bold')),
+                ),
             );
 
             // 'Required' cell
@@ -401,15 +401,15 @@ class DefaultGenerator implements DocumentGeneratorInterface
             $color = ($parameter['required'] ?? false) ? 'red' : 'blue';
             $row->append(
                 (new TableCell())->append(
-                    (new Paragraph())->append(new Status($text, $color, null, 'bold'))
-                )
+                    (new Paragraph())->append(new Status($text, $color, null, 'bold')),
+                ),
             );
 
             // 'Description' header cell
             $row->append(
                 (new TableCell())->append(
-                    (new Paragraph())->append(new Text($parameter['description'] ?? ''))
-                )
+                    (new Paragraph())->append(new Text($parameter['description'] ?? '')),
+                ),
             );
 
             $table->append($row);
@@ -430,7 +430,7 @@ class DefaultGenerator implements DocumentGeneratorInterface
             $cmdLines[] = sprintf("  --cookie '%s=%s'", urlencode($headerName), urlencode($headerValue));
         }
         foreach ($endpoint['requestBodies'] as $requestBody) {
-            if (!is_null($requestBody['example'])) {
+            if (null !== $requestBody['example']) {
                 $cmdLines[] = sprintf("  --data '%s'", json_encode($requestBody['example']));
             }
             break;
@@ -443,11 +443,11 @@ class DefaultGenerator implements DocumentGeneratorInterface
     {
         if ('application/json' === $contentType) {
             $node = (new CodeBlock('json'))->append(
-                new Text(json_encode($example, JSON_PRETTY_PRINT))
+                new Text(json_encode($example, JSON_PRETTY_PRINT)),
             );
         } else {
             $node = (new CodeBlock())->append(
-                new Text((string) $example)
+                new Text((string) $example),
             );
         }
 
@@ -460,19 +460,19 @@ class DefaultGenerator implements DocumentGeneratorInterface
 
         // Heading
         $nodes[] = (new Heading(1))->append(
-            new Text('Schemas')
+            new Text('Schemas'),
         );
 
         foreach ($schemas as $schemaName => $schema) {
             // Schema name heading
             $nodes[] = (new Heading(3))->append(
-                new Text($schemaName)
+                new Text($schemaName),
             );
 
             // Schema description
             if (!empty($schema['description'])) {
                 $nodes[] = (new Paragraph())->append(
-                    new Text($schema['description'])
+                    new Text($schema['description']),
                 );
             }
 
@@ -494,16 +494,14 @@ class DefaultGenerator implements DocumentGeneratorInterface
             (new Paragraph()),
             (new Paragraph()),
             (new Panel(Panel::INFO))->append(
-                (new Heading(6))->append(
-                    new Text('This page was automatically generated.')
-                ),
-                (new Heading(6))->append(
+                (new Paragraph())->append(
                     new Text(
-                        'Please do not change this page manually. '
-                        . 'All changes made will be overwritten at the next automatic update.'
-                    )
-                )
-            )
+                        "Note: This page is managed automatically. "
+                        . "To suggest changes, please update the source files or contact the page owners. "
+                        . "Manual edits here will be lost on the next update.",
+                    ),
+                ),
+            ),
         ];
     }
 }

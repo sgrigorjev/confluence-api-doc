@@ -15,7 +15,7 @@ class InitCommand extends AbstractCommand
     private const OVERWRITE_QUESTION = 'Configuration file "%s" already exists in this directory. '
                                      . 'Do you want to overwrite it and lose all its contents?';
 
-    protected static $defaultName = 'init';
+    protected static string $defaultName = 'init';
 
     public function __construct()
     {
@@ -35,7 +35,7 @@ class InitCommand extends AbstractCommand
             $initConfig = $io->confirm(sprintf(self::OVERWRITE_QUESTION, self::CONFIG_FILENAME), false);
             $logger->debug(
                 sprintf('Confirmation for overwriting %s', self::CONFIG_FILENAME),
-                ['overwrite' => $initConfig]
+                ['overwrite' => $initConfig],
             );
         }
 
@@ -47,7 +47,7 @@ class InitCommand extends AbstractCommand
             $initApiDocConfig = $io->confirm(sprintf(self::OVERWRITE_QUESTION, self::API_DOC_CONFIG_FILENAME), false);
             $logger->debug(
                 sprintf('Confirmation for overwriting %s', self::API_DOC_CONFIG_FILENAME),
-                ['overwrite' => $initApiDocConfig]
+                ['overwrite' => $initApiDocConfig],
             );
         }
 
@@ -77,7 +77,7 @@ class InitCommand extends AbstractCommand
         if ($io->confirm('Would you like to fill out confluence credentials now?')) {
             $config['confluence']['host'] = $io->ask('Confluence host');
             $config['confluence']['user'] = $io->ask('Confluence user');
-            $config['confluence']['token'] =$io->ask('Confluence API token');
+            $config['confluence']['token'] = $io->ask('Confluence API token');
         }
 
         $this->saveConfig($config);
@@ -103,8 +103,8 @@ class InitCommand extends AbstractCommand
         $io->text(
             sprintf(
                 'Fill file "%s" with information about the APIs that should be published',
-                self::API_DOC_CONFIG_FILENAME
-            )
+                self::API_DOC_CONFIG_FILENAME,
+            ),
         );
     }
 }
