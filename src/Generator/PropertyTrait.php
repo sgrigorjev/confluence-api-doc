@@ -25,7 +25,7 @@ trait PropertyTrait
         if (isset($property['oneOf']) && is_array($property['oneOf'])) {
             $amount = count($property['oneOf']);
             foreach ($property['oneOf'] as $i => $subProperty) {
-                $nodes = array_merge($nodes, $this->createPropertySingleType($subProperty));
+                $nodes = [...$nodes, ...$this->createPropertySingleType($subProperty)];
                 if ($i < $amount - 1) {
                     $nodes[] = new Text("\n");
                 }
@@ -33,13 +33,15 @@ trait PropertyTrait
         } elseif (isset($property['type']) && is_array($property['type'])) {
             $amount = count($property['type']);
             foreach ($property['type'] as $i => $type) {
-                $nodes = array_merge($nodes, $this->createPropertySingleType(array_merge($property, ['type' => $type])));
+                $modifiedProperty = $property;
+                $modifiedProperty['type'] = $type;
+                $nodes = [...$nodes, ...$this->createPropertySingleType($modifiedProperty)];
                 if ($i < $amount - 1) {
                     $nodes[] = new Text("\n");
                 }
             }
         } else {
-            $nodes = array_merge($nodes, $this->createPropertySingleType($property));
+            $nodes = [...$nodes, ...$this->createPropertySingleType($property)];
         }
 
         return (new Paragraph())->append(...$nodes);

@@ -122,8 +122,9 @@ class OpenApiProvider
         foreach ($contents as $contentType => $content) {
             $request = [
                 'contentType' => $contentType,
+                ...$this->createContentSchemaInfo($content),
             ];
-            $requestBodies[] = array_merge($request, $this->createContentSchemaInfo($content));
+            $requestBodies[] = $request;
         }
 
         return $requestBodies;
@@ -293,8 +294,8 @@ class OpenApiProvider
                 if (isset($subSchema['$ref'])) {
                     $subSchema = $this->getSchemaByName($this->getSchemaNameByRef($subSchema['$ref']));
                 }
-                $properties = array_merge($properties, $subSchema['properties'] ?? []);
-                $required = array_merge($required, $subSchema['required'] ?? []);
+                $properties = [...$properties, ...($subSchema['properties'] ?? [])];
+                $required = [...$required, ...($subSchema['required'] ?? [])];
             }
             unset($schema['allOf']);
             $schema['required'] = $required;

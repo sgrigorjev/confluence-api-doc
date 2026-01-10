@@ -53,7 +53,7 @@ class PublishCommand extends AbstractCommand
             $result = $publisher->process($docGenerator, $openApiProvider, $apiName, $apiConfig);
 
             // Update api config with information about the latest update
-            $apiDocConfig['apis'][$apiName] = array_merge($apiDocConfig['apis'][$apiName], $result['info']);
+            $apiDocConfig['apis'][$apiName] = [...$apiDocConfig['apis'][$apiName], ...$result['info']];
 
             // Output the API page status
             if (ConfluencePublisher::STATUS_PUBLISHED === $result['status']) {

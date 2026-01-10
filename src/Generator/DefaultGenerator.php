@@ -96,7 +96,7 @@ class DefaultGenerator implements DocumentGeneratorInterface
         );
 
         if (!empty($endpoint['description'])) {
-            $nodes = array_merge($nodes, $this->createFromMarkdown($endpoint['description']));
+            $nodes = [...$nodes, ...$this->createFromMarkdown($endpoint['description'])];
         }
 
         // Example header
@@ -137,7 +137,7 @@ class DefaultGenerator implements DocumentGeneratorInterface
 
             // Request body details
             foreach ($endpoint['requestBodies'] as $requestBody) {
-                $nodes = array_merge($nodes, $this->createRequestBody($requestBody));
+                $nodes = [...$nodes, ...$this->createRequestBody($requestBody)];
             }
         }
 
@@ -150,7 +150,7 @@ class DefaultGenerator implements DocumentGeneratorInterface
 
             // Responses descriptions
             foreach ($endpoint['responses'] as $responseCode => $response) {
-                $nodes = array_merge($nodes, $this->createResponse((string) $responseCode, $response));
+                $nodes = [...$nodes, ...$this->createResponse((string) $responseCode, $response)];
             }
         }
 

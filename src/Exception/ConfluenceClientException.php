@@ -8,8 +8,7 @@ class ConfluenceClientException extends CommandException
 {
     public static function responseError(string $error): static
     {
-        $messages = ['Invalid response'];
-        $messages = array_merge($messages, preg_split("/\n/", $error, 0, PREG_SPLIT_NO_EMPTY));
+        $messages = ['Invalid response', ...preg_split("/\n/", $error, 0, PREG_SPLIT_NO_EMPTY)];
 
         return new static($messages);
     }
@@ -20,11 +19,12 @@ class ConfluenceClientException extends CommandException
         string $data,
         string $error,
     ): static {
-        $messages = [];
-        $messages[] = 'Invalid JSON response is received from ' . $method . ' ' . $uri;
-        $messages[] = 'Response body:';
-        $messages = array_merge($messages, preg_split("/\n/", $data, 0, PREG_SPLIT_NO_EMPTY));
-        $messages[] = $error;
+        $messages = [
+            'Invalid JSON response is received from ' . $method . ' ' . $uri,
+            'Response body:',
+            ...preg_split("/\n/", $data, 0, PREG_SPLIT_NO_EMPTY),
+            $error,
+        ];
 
         return new static($messages);
     }
