@@ -117,11 +117,20 @@ trait PropertyTrait
             $nodes[] = new Text($property['description']);
         }
 
+        if (isset($property['enum']) && is_array($property['enum'])) {
+            if ($nodes) {
+                $nodes[] = new Text("\n");
+            }
+            $nodes[] = new Status('One of', Status::COLOR_NEUTRAL);
+            $nodes[] = new Text(' ');
+            $nodes[] = new Text(implode(', ', $property['enum']));
+        }
+
         if (isset($property['default'])) {
             if ($nodes) {
                 $nodes[] = new Text("\n");
             }
-            $nodes[] = new Status('Default: ' . var_export($property['default'], true), Status::COLOR_PURPLE);
+            $nodes[] = new Status('Default: ' . json_encode($property['default']), Status::COLOR_PURPLE);
         }
 
         return (new Paragraph())->append(...$nodes);
