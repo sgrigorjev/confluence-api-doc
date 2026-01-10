@@ -1,0 +1,20 @@
+# This file contains information about APIs that are published on the Confluence
+#
+# Example and description of file fields:
+#
+# apis:                                     # A set of different APIs, with their own OpenAPI scheme, which will be published independently
+#    example-api:                           # Name of the API (internal value and will not be published anywhere)
+#        openapi: docs/openapi/example.yaml # [Required] Relative path to the file with OpenAPI schema (YAML or JSON)
+#        generator: '%class name%'          # [Optional] Custom document generator class that implements ConfluenceApiDoc\Generator\DocumentGeneratorInterface (if empty, default generator will be used)
+#        scope-key: MY_SPACE                # [Required] Confluence space key
+#        parent-id: '110133249'             # [Optional] Confluence page ID of which the doc page should be a subpage (if empty, a doc page will be created at the root of the space)
+#        page-title: 'Example API'          # [Required] Name of the created doc page (used only on initial creation, then the page title can be changed manually on the Confluence)
+#
+#        The following fields will be created automatically:
+#
+#        page-id: '125337645'                                                     # Confluence doc page ID
+#        page-url: 'https://.../wiki/spaces/MY_SPACE/pages/125337645/Example+API' # Confluence doc page URL
+#        published-at: 'Tue, 17 Oct 2023 20:50:47 +0300'                          # Date of last publication
+#        checksum: '11d1d4244894ef1ca6ba36ba7847f5e8'                             # Checksum of last published content
+#
+# ! WARNING: any commented areas below in this file will be removed the next time the command is run !

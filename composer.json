@@ -1,0 +1,36 @@
+{
+    "name": "sgrigorjev/confluence-api-doc",
+    "description": "A tool for converting OpenAPI documents into natively formatted Confluence pages and automatically publishing them via the Confluence API",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Sergey Grigorjev",
+            "email": "sergey.grigoriev.web@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "ConfluenceApiDoc\\": "src/"
+        }
+    },
+    "bin": [
+        "bin/confluence-api-doc"
+    ],
+    "require": {
+        "php": "^8.2",
+        "ext-json": "*",
+        "guzzlehttp/guzzle": "^7.5",
+        "psr/log": "^1.1",
+        "damienharper/adf-tools": "^1.2",
+        "symfony/console": "^7.3",
+        "symfony/yaml": "^7.3"
+    },
+    "require-dev": {
+        "symfony/var-dumper": "^7.3",
+        "roave/security-advisories": "dev-latest"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    }
+}

@@ -1,0 +1,37 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+if ('cli' !== PHP_SAPI) {
+    fwrite(STDERR, 'This script must be run from the command line.' . PHP_EOL);
+    exit(1);
+}
+
+function includeIfExists(string $file): bool
+{
+    return $file && file_exists($file) && include $file;
+}
+
+if (
+    !includeIfExists($_composer_autoload_path ?? '')
+    && !includeIfExists(__DIR__ . '/../vendor/autoload.php')
+    && !includeIfExists(__DIR__ . '/../../../autoload.php')
+) {
+    fwrite(STDERR, 'Install dependencies using Composer.' . PHP_EOL);
+    exit(1);
+}
+
+use ConfluenceApiDoc\Command\InitCommand;
+use ConfluenceApiDoc\Command\PublishCommand;
+use Symfony\Component\Console\Application;
+
+try {
+    $application = new Application();
+    $application->add(new InitCommand());
+    $application->add(new PublishCommand());
+    $application->run();
+} catch (Exception $e) {
+    echo $e;
+    exit(1);
+}
