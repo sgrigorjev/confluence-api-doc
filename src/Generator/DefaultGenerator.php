@@ -494,13 +494,11 @@ class DefaultGenerator implements DocumentGeneratorInterface
             (new Paragraph()),
             (new Paragraph()),
             (new Panel(Panel::INFO))->append(
-                (new Heading(6))->append(
-                    new Text('This page was automatically generated.'),
-                ),
-                (new Heading(6))->append(
+                (new Paragraph())->append(
                     new Text(
-                        'Please do not change this page manually. '
-                        . 'All changes made will be overwritten at the next automatic update.',
+                        "Note: This page is managed automatically. "
+                        . "To suggest changes, please update the source files or contact the page owners. "
+                        . "Manual edits here will be lost on the next update.",
                     ),
                 ),
             ),
