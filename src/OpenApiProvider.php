@@ -92,13 +92,15 @@ class OpenApiProvider
             $endpoint['responses'] = $this->createResponses($method['responses']);
         }
 
+        $security = $method['security'] ?? $this->getSecurity();
+
         $endpoint['requestHeaders'] = $this->createRequestHeaders(
             $endpoint['requestBodies'],
             $endpoint['responses'],
-            $method['security'] ?? [],
+            $security,
         );
 
-        $endpoint['requestCookies'] = $this->createRequestCookies($method['security'] ?? []);
+        $endpoint['requestCookies'] = $this->createRequestCookies($security);
 
         return $endpoint;
     }
@@ -236,6 +238,11 @@ class OpenApiProvider
     public function getPaths(): array
     {
         return $this->openapi['paths'] ?? [];
+    }
+
+    public function getSecurity(): array
+    {
+        return $this->openapi['security'] ?? [];
     }
 
     public function getSchemas(): array
