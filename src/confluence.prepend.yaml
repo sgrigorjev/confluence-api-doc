@@ -1,2 +1,15 @@
 # This file contains information about Confluence access settings
 # ! Do not commit this file to your project's repository. Better add this file to your .gitignore !
+#
+# The token is an Atlassian API token created at
+# https://id.atlassian.com/manage-profile/security/api-tokens
+# When creating a scoped token, select the Confluence product and these scopes:
+#
+#   read:space:confluence   resolve the space key to a space id (first publish only)
+#   read:page:confluence    load the current page version before an update
+#   write:page:confluence   create and update pages
+#
+# Classic scope names, if the token form offers those instead:
+#   read:confluence-space.summary, read:confluence-content.all, write:confluence-content
+#
+# No Jira scopes are needed.
